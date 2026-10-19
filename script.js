@@ -76,3 +76,77 @@ if (item.checked) total += Number(item.value);
 });
 document.getElementById("total").textContent = total.toLocaleString("id-ID");
 }
+
+
+function hitungNilaiAkhir(tugas, uts, uas) {
+    return tugas * 0.30 + uts * 0.30 + uas * 0.40;
+}
+
+function tentukanPredikat(nilai) {
+    if (nilai >= 85) return "A";
+    if (nilai >= 75) return "B";
+    if (nilai >= 60) return "C";
+    if (nilai >= 50) return "D";
+    return "E";
+}
+
+function tentukanStatus(nilai) {
+    return nilai >= 60 ? "Lulus" : "Belum lulus";
+}
+
+function tampilkanHasil(nilaiAkhir) {
+    document.getElementById("hasilAkhir").textContent =
+        "Nilai akhir: " + nilaiAkhir.toFixed(2);
+
+    document.getElementById("hasilPredikat").textContent =
+        "Predikat: " + tentukanPredikat(nilaiAkhir);
+
+    document.getElementById("hasilStatus").textContent =
+        "Status kelulusan: " + tentukanStatus(nilaiAkhir);
+}
+
+document.getElementById("formNilai").addEventListener("submit",
+    function(event) {
+        event.preventDefault();
+
+        const tugas = document.getElementById("tugas").valueAsNumber;
+        const uts = document.getElementById("uts").valueAsNumber;
+        const uas = document.getElementById("uas").valueAsNumber;
+        const pesan = document.getElementById("pesan");
+
+        if (
+            !Number.isFinite(tugas) ||
+            !Number.isFinite(uts) ||
+            !Number.isFinite(uas) ||
+            tugas < 0 || tugas > 100 ||
+            uts < 0 || uts > 100 ||
+            uas < 0 || uas > 100
+        ) {
+            pesan.textContent =
+                "Error: Nilai harus berada pada rentang 0–100.";
+            pesan.style.color = "red";
+            return;
+        }
+
+        pesan.textContent = "";
+        const akhir = hitungNilaiAkhir(tugas, uts, uas);
+
+        tampilkanHasil(akhir);
+
+        console.log("Nilai akhir:", akhir.toFixed(2));
+        console.log("Predikat:", tentukanPredikat(akhir));
+        console.log("Status:", tentukanStatus(akhir));
+    }
+);
+
+document.getElementById("formNilai").addEventListener("reset",
+    function() {
+        document.getElementById("pesan").textContent = "";
+        document.getElementById("hasilAkhir").textContent =
+            "Nilai akhir: -";
+        document.getElementById("hasilPredikat").textContent =
+            "Predikat: -";
+        document.getElementById("hasilStatus").textContent =
+            "Status kelulusan: -";
+    }
+);
